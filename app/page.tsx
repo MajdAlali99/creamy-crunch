@@ -1,13 +1,18 @@
+'use client'
+
 import Image from "next/image"
 import { ChevronRight } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <div className="min-h-screen bg-[#fffdf2]">
       {/* Navigation */}
-      <header className="container mx-auto px-4 py-6">
+      <header className="container mx-auto px-4 py-6 relative z-40">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-10 w-10 rounded-full bg-[#fff7aa] flex items-center justify-center">
@@ -15,6 +20,8 @@ export default function Home() {
             </div>
             <span className="font-bold text-xl">Creamy Crunch</span>
           </div>
+
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
             <a href="#" className="text-gray-800 hover:text-[#ff8c69] transition-colors">
               Home
@@ -27,29 +34,96 @@ export default function Home() {
             </a>
             <Button className="bg-[#ff8c69] hover:bg-[#ff7f59] text-white">Order Now</Button>
           </div>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-menu"
-            >
-              <line x1="4" x2="20" y1="12" y2="12" />
-              <line x1="4" x2="20" y1="6" y2="6" />
-              <line x1="4" x2="20" y1="18" y2="18" />
-            </svg>
+
+          {/* Mobile Menu Toggle Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-x"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-menu"
+              >
+                <line x1="4" x2="20" y1="12" y2="12" />
+                <line x1="4" x2="20" y1="6" y2="6" />
+                <line x1="4" x2="20" y1="18" y2="18" />
+              </svg>
+            )}
           </Button>
+
+          {/* Mobile Menu */}
+          <div
+            className={`fixed inset-0 bg-black bg-opacity-50 md:hidden transition-opacity z-50 ${
+              isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setIsOpen(false)}
+          >
+            <div
+              className={`fixed right-0 top-0 h-full w-64 bg-white transform transition-transform z-50 ${
+                isOpen ? "translate-x-0" : "translate-x-full"
+              }`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 flex flex-col gap-4">
+                <a 
+                  href="#" 
+                  className="text-gray-800 hover:text-[#ff8c69] transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Home
+                </a>
+                <a 
+                  href="#about" 
+                  className="text-gray-800 hover:text-[#ff8c69] transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  About
+                </a>
+                <a 
+                  href="#menu" 
+                  className="text-gray-800 hover:text-[#ff8c69] transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Menu
+                </a>
+                <Button className="bg-[#ff8c69] hover:bg-[#ff7f59] text-white">
+                  Order Now
+                </Button>
+              </div>
+            </div>
+          </div>
         </nav>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-12 md:py-24 relative overflow-hidden">
+      <section className="container mx-auto px-4 py-12 md:py-24 relative overflow-hidden z-0">
         <div className="absolute -right-32 top-0 w-64 h-64 rounded-full bg-[#fff7aa] opacity-50"></div>
         <div className="absolute -left-32 bottom-0 w-64 h-64 rounded-full bg-[#ffdab9] opacity-50"></div>
 
@@ -61,7 +135,10 @@ export default function Home() {
             </p>
             <div className="flex gap-4">
               <Button className="bg-[#ff8c69] hover:bg-[#ff7f59] text-white">Order Now</Button>
-              <Button variant="outline" className="border-[#ffdab9] text-gray-800">
+              <Button variant="outline" className="border-[#ffdab9] text-gray-800" onClick={() => {
+                const menuSection = document.getElementById('menu');
+                menuSection?.scrollIntoView({ behavior: 'smooth' });
+              }}>
                 View Menu <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
